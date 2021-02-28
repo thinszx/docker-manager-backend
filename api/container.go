@@ -18,7 +18,7 @@ import (
 
 //cli, err = client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 
-
+// url - /container/list
 func HostContainerList(c *gin.Context) {
 	cli, err := client.NewClientWithOpts(client.FromEnv)
 	defer cli.Close()

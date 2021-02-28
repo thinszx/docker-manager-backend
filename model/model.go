@@ -28,7 +28,7 @@ type HostAgentModel struct {
 
 
 }
-
+ 
 // CheckIPValidation 用作验证IP有效性，自定义验证器，和结构体中的Address结构体绑定
 var CheckIPValidation validator.Func = func(fl validator.FieldLevel) bool {
 	// @IMPROVE 改成ping通ping不通？
