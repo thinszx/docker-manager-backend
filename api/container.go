@@ -37,6 +37,23 @@ func HostContainerList(c *gin.Context) {
 	c.JSON(200, gin.H{"result": string(res)})
 }
 
+// url - /container/remove/:containerID
+func HostContainerRemove(c *gin.Context) {
+	cli, err := client.NewClientWithOpts(client.FromEnv)
+	defer cli.Close()
+	ctx := context.Background()
+
+	err = cli.ContainerRemove(ctx, c.Param("containerID"), types.ContainerRemoveOptions{})
+
+	if err != nil {
+		c.JSON(404, gin.H{"result": ""})
+		return
+	}
+	c.JSON(200, gin.H{"result": ""})
+}
+
+
+
 
 
 

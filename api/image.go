@@ -4,14 +4,24 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
 	"github.com/gin-gonic/gin"
 )
 
+/* @TODO client的获取没有做错误处理*/
+
 // url - /image/list
 func HostImageList(c *gin.Context) {
 	cli, err := client.NewClientWithOpts(client.FromEnv)
+	///////
+	if err != nil {
+		fmt.Println("fail to get client")
+		fmt.Println(err)
+	}
+	//fmt.Println("success")
+	//////////
 	defer cli.Close()
 	ctx := context.Background()
 
