@@ -23,11 +23,20 @@ import (
 
 func InitRouter() *gin.Engine {
 	r := gin.Default()
-	r.GET("/image/list", api.HostImageList)
-	r.GET("/image/pull/:name", api.HostImagePull)
-
-	r.GET("/container/list", api.HostContainerList)
+	//r.GET("/image/list", api.HostImageList)
 	//r.GET("/image/pull/:name", api.HostImagePull)
-	r.GET("/container/remove/:containerID", api.HostContainerRemove)
+	//// 未测试
+	//r.GET("/image/remove/:name", api.HostImageRemove)
+	//
+	//// 已测试
+	//r.GET("/container/list", api.HostContainerList)
+	////r.GET("/image/pull/:name", api.HostImagePull)
+	//// 未测试
+	//r.GET("/container/remove/:containerID", api.HostContainerRemove)
+
+	// 按照新的版本进行编写
+	r.GET("/container/create", api.HostContainerCreate)
+	r.GET("/container/start/:containerID", api.HostContainerStart)
+
 	return r
 }

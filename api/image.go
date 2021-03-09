@@ -57,3 +57,19 @@ func HostImagePull(c *gin.Context) {
 	c.JSON(200, gin.H{"result": newStr})
 }
 
+// url - /image/remove/:name
+func HostImageRemove(c *gin.Context) {
+	ctx := context.Background()
+	cli, err := client.NewClientWithOpts(client.FromEnv)
+	defer cli.Close()
+	tmp, err := cli.ImageRemove(ctx, c.Param("name"), types.ImageRemoveOptions{})
+	if err != nil {
+		c.JSON(404, gin.H{"result": ""})
+		return
+	}
+	res, err := json.Marshal(tmp)
+	if err != nil {
+		panic(err)
+	}
+	c.JSON(200, gin.H{"result": string(res)})
+}
