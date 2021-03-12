@@ -3,26 +3,17 @@ package service
 import (
 	"context"
 	"fmt"
-	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
 	"github.com/dockermanage/model"
 	"github.com/dockermanage/serializer"
 )
 
-/*
- * container相关api：
- * $GOPATH\pkg\mod\github.com\docker\docker_version\client\interface.go
- *
- * https://docs.docker.com/engine/reference/commandline/container/
- * https://www.php.cn/manual/view/36009.html
- */
-
-// StartContainerService 启动容器的服务
-type StartContainerService struct {
+// RenameContainerService 重命名容器的服务
+type RenameContainerService struct {
 }
 
-// StartContainer 启动容器
-func (service *StartContainerService) StartContainer(containerID string) serializer.Response {
+// RenameContainerService 重命名容器
+func (service *RenameContainerService) RenameContainer(containerID string, newName string) serializer.Response {
 	// 获取client，请求docker api进行相关操作
 	cli, err := client.NewClientWithOpts(client.FromEnv)
 	if err != nil {
@@ -33,9 +24,8 @@ func (service *StartContainerService) StartContainer(containerID string) seriali
 		}
 	}
 	defer cli.Close()
-	ctx := context.Background()
 
-	// 根据container id查询container失败
+	// 根据container id查询container
 	containerModel, err := model.GetContainerModel(containerID)
 	if err != nil {
 		return serializer.Response{
@@ -45,17 +35,17 @@ func (service *StartContainerService) StartContainer(containerID string) seriali
 		}
 	}
 
-	// 根据container id进行container的start操作
-	if err = cli.ContainerStart(ctx, containerID, types.ContainerStartOptions{}); err != nil {
+	// 不用检验当前容器状态，就算是运行的也可以改名字
+	// 根据container id进行container的rename操作
+	if err = cli.ContainerRename(context.Background(), containerID, newName); err != nil {
 		return serializer.Response{
 			Status: 500,
-			Msg:    fmt.Sprintf("Failed to start the container \"%s\"", containerModel.Name),
+			Msg:    fmt.Sprintf("Failed to rename the container \"%s\" to \"%s\"", containerModel.Name, newName),
 			Error:  err.Error(),
 		}
 	}
 
 	// 更改container的数据并存储
-	containerModel.Status = "Running"
 	if err = model.DB.Save(&containerModel).Error; err != nil {
 		return serializer.Response{
 			Status: 500,

@@ -54,7 +54,6 @@ func (service *CreateContainerService) CreateContainer(agentIP string, imageName
 		}
 	}
 	defer cli.Close()
-	ctx := context.Background()
 
 	// 解析当前要运行的命令参数
 	var args []string // 不知道会不会报错，备选args := []string{}
@@ -64,7 +63,7 @@ func (service *CreateContainerService) CreateContainer(agentIP string, imageName
 	}
 
 	// 根据container id进行container的create操作
-	resp, err := cli.ContainerCreate(ctx, &container.Config{
+	resp, err := cli.ContainerCreate(context.Background(), &container.Config{
 		Image: imageName,
 		Cmd:   args,
 		Tty:   false,
