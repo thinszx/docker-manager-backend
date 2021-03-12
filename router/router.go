@@ -35,8 +35,15 @@ func InitRouter() *gin.Engine {
 	//r.GET("/container/remove/:containerID", api.HostContainerRemove)
 
 	// 按照新的版本进行编写
-	r.GET("/container/create", api.HostContainerCreate)
-	r.GET("/container/start/:containerID", api.HostContainerStart)
-
+	r.GET("/container/init", api.HostContainerInitList)
+	r.GET("/container/list", api.HostContainerListWithFilters)
+	r.POST("/container/create", api.HostContainerCreate)
+	r.POST("/container/start/:containerID", api.HostContainerStart)
+	r.POST("/container/stop/:containerID",api.HostContainerStop)
+	r.POST("/container/restart/:containerID", api.HostContainerRestart)
+	r.POST("/container/kill/:containerID",api.HostContainerKill)
+	r.POST("/container/pause/:containerID", api.HostContainerPause)
+	r.DELETE("/container/delete/:containerID" ,api.HostContainerRemove)
+	r.POST("/container/rename/:containerID", api.HostContainerRename)
 	return r
 }

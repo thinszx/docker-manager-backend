@@ -22,7 +22,7 @@ type StartContainerService struct {
 }
 
 // StartContainer 启动容器
-// @TODO 定期检测container状态，若宕机则尝试进行重启（应该给用户提供可选选项
+// @TODO 定期检测container状态，若宕机则尝试进行重启（应该给用户提供可选选项）
 // 可参考https://www.jianshu.com/p/8f69a581a40c
 func (service *StartContainerService) StartContainer(containerID string) serializer.Response {
 	// 获取client，请求docker api进行相关操作

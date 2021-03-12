@@ -45,11 +45,13 @@ func (service *StopContainerService) StopContainer(containerID string, timeout s
 	}
 
 	// 根据container id进行container的stop操作
-	timeoutDuration, err := time.ParseDuration(timeout)
-	if err!=nil{
-		return serializer.Response{
-			Status: 200,
-			Msg:    fmt.Sprintf("\"%s\" is NOT in the correct time format", timeout),
+	var timeoutDuration time.Duration
+	if timeout != "" {
+		if timeoutDuration, err = time.ParseDuration(timeout); err != nil {
+			return serializer.Response{
+				Status: 200,
+				Msg:    fmt.Sprintf("\"%s\" is NOT in the correct time format", timeout),
+			}
 		}
 	}
 
