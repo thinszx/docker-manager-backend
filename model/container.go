@@ -35,12 +35,11 @@ func GetContainerNameByID(containerID string) (string, error) {
 		return "", err
 	}
 	defer cli.Close()
-	ctx := context.Background()
 
 	var filter = filters.NewArgs()
 	filter.Add("id", containerID)
 
-	containers, err := cli.ContainerList(ctx, types.ContainerListOptions{All: true, Filters: filter})
+	containers, err := cli.ContainerList(context.Background(), types.ContainerListOptions{All: true, Filters: filter})
 	if err != nil {
 		return "", err
 	}

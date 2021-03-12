@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
-	"github.com/dockermanage/service"
+	"github.com/dockermanage/service/container_service"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,13 +18,12 @@ import (
 
 //cli, err = client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 
-// url - /container/list
+// GET /container/list
 func HostContainerList(c *gin.Context) {
 	cli, err := client.NewClientWithOpts(client.FromEnv)
 	defer cli.Close()
-	ctx := context.Background()
 
-	temp, err := cli.ContainerList(ctx, types.ContainerListOptions{})
+	temp, err := cli.ContainerList(context.Background(), types.ContainerListOptions{})
 
 	if err != nil {
 		c.JSON(404, gin.H{"result": ""})
@@ -41,9 +40,8 @@ func HostContainerList(c *gin.Context) {
 func HostContainerRemove(c *gin.Context) {
 	cli, err := client.NewClientWithOpts(client.FromEnv)
 	defer cli.Close()
-	ctx := context.Background()
 
-	err = cli.ContainerRemove(ctx, c.Param("containerID"), types.ContainerRemoveOptions{})
+	err = cli.ContainerRemove(context.Background(), c.Param("containerID"), types.ContainerRemoveOptions{})
 
 	if err != nil {
 		c.JSON(404, gin.H{"result": ""})
@@ -52,12 +50,17 @@ func HostContainerRemove(c *gin.Context) {
 	c.JSON(200, gin.H{"result": ""})
 }
 
-// 按照新的格式进行编写
-// HostContainerCreate
-// /container/create?agent_ip=xxx&image_name=xxx&container_name=xxx?cmd=xxx&info=xxx
+/*******************************************************************/
+// HostContainerCreate POST /container/create
+// 			参数名		参数类型	获取方式	是否必需
+// @Param	agent_ip	string	form	true
+// @Param	agent_ip	string	form	true
+// @Param	agent_ip	string	form	true
+// @Param	agent_ip	string	form	true
+// @Param	agent_ip	string	form	true
 // @TODO agentIP的处理
 func HostContainerCreate(c *gin.Context) {
-	createContainerService := service.CreateContainerService{}
+	createContainerService := container_service.CreateContainerService{}
 	// 获取参数
 	agentIP := c.Query("agent_ip")
 	imageName := c.Query("image_name")
@@ -75,30 +78,26 @@ func HostContainerCreate(c *gin.Context) {
 // HostContainerStart
 // /container/start/:containerID
 func HostContainerStart(c *gin.Context) {
-	startContainerService := service.StartContainerService{}
+	startContainerService := container_service.StartContainerService{}
 	if err := c.ShouldBind(&startContainerService); err == nil {
-		res := startContainerService.StartContainer(c.Param("containerID"))
+		containerID := c.
+		("containerID")
+		res := startContainerService.StartContainer(containerID)
 		c.JSON(200, res)
 	} else {
 		c.JSON(200, ErrorResponse(err))
 	}
 }
 
-//func main() {
-//	ctx := context.Background()
-//	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
-//	containers, err := cli.ImageList(ctx, types.ImageListOptions{})
-//	if err != nil {
-//		panic(err)
-//	}
+// HostContainerStop
 //
-//	res, err := json.Marshal(containers)
-//	if err != nil {
-//		panic(err)
-//	}
-//
-//	//for _, container := range containers {
-//	//	fmt.Println(container.ID)
-//	//}
-//	fmt.Println(string(res))
-//}
+func HostContainerStop(c *gin.Context) {
+	stopContainerService := container_service.StopContainerService{}
+	if err := c.ShouldBind(&stopContainerService); err == nil {
+		//containerID string, timeout string
+		res := stopContainerService.StopContainer()
+		c.JSON(200, res)
+	} else {
+		c.JSON(200, ErrorResponse(err))
+	}
+}

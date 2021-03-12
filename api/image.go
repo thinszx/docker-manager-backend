@@ -23,9 +23,8 @@ func HostImageList(c *gin.Context) {
 	//fmt.Println("success")
 	//////////
 	defer cli.Close()
-	ctx := context.Background()
 
-	tmp, err := cli.ImageList(ctx, types.ImageListOptions{})
+	tmp, err := cli.ImageList(context.Background(), types.ImageListOptions{})
 
 	if err != nil {
 		c.JSON(404, gin.H{"result": ""})
@@ -40,10 +39,9 @@ func HostImageList(c *gin.Context) {
 
 // url - /image/pull/:name
 func HostImagePull(c *gin.Context) {
-	ctx := context.Background()
 	cli, err := client.NewClientWithOpts(client.FromEnv)
 	defer cli.Close()
-	out, err := cli.ImagePull(ctx, c.Param("name"), types.ImagePullOptions{})
+	out, err := cli.ImagePull(context.Background(), c.Param("name"), types.ImagePullOptions{})
 	if err != nil {
 		c.JSON(404, gin.H{"result": ""})
 		return
@@ -59,10 +57,9 @@ func HostImagePull(c *gin.Context) {
 
 // url - /image/remove/:name
 func HostImageRemove(c *gin.Context) {
-	ctx := context.Background()
 	cli, err := client.NewClientWithOpts(client.FromEnv)
 	defer cli.Close()
-	tmp, err := cli.ImageRemove(ctx, c.Param("name"), types.ImageRemoveOptions{})
+	tmp, err := cli.ImageRemove(context.Background(), c.Param("name"), types.ImageRemoveOptions{})
 	if err != nil {
 		c.JSON(404, gin.H{"result": ""})
 		return
